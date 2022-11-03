@@ -3,6 +3,7 @@
 $display_sample = true;
 $file_name = '';
 $expected_columns = [
+    'team names',
     'series number',
     'filename',
     'name',
@@ -63,10 +64,10 @@ for ($i = 0; $i < count($rows); $i++) {
     }
 
     if (row_is_valid($row, $expected_columns)) {
-        $attribute = get_row_attributes($row[5]);
+        $attribute = get_row_attributes($row[6]);
         $attributes[] = [
             'trait_type' => 'Gender',
-            'value' => $row[4]
+            'value' => $row[5]
         ];
 
         foreach ($attribute as $trait_type => $value) {
@@ -76,12 +77,20 @@ for ($i = 0; $i < count($rows); $i++) {
             ];
         }
 
+        $temp_attributes = $attributes;
+        array_shift($temp_attributes);
+        $output_attribute = [];
+        foreach ($temp_attributes as $single_attribute) {
+            $output_attribute[] = implode(':', $single_attribute);
+        }
+        $output_attribute = implode(', ', $output_attribute);
+
         $chip_json = get_chip_json([
-            'series_number' => intval($row[0]),
-            'name' => $row[2],
-            'description' => $row[3],
+            'series_number' => intval($row[1]),
+            'name' => $row[3],
+            'description' => $row[4],
             'attributes' => $attributes,
-            'uuid' => $row[6]
+            'uuid' => $row[7]
         ], $valid_rows);
 
         // display only one sample data in 'chip-0007 format'
@@ -97,10 +106,11 @@ for ($i = 0; $i < count($rows); $i++) {
             echo "***********************************************************************\n\n";
             $display_sample = false;
         }
-        
+
         $chip_json = json_encode($chip_json);
 
         $chip_hash = hash("sha256", $chip_json);
+        $output_rows[$i][6] = $output_attribute;
         $output_rows[$i][count($expected_columns)] = $chip_hash;
     }
 }
@@ -114,7 +124,7 @@ fclose($output_file);
 
 echo "\n\n";
 echo "FILE HAS BEEN EXPORTED SUCCESSFULLY\n\n";
-echo "Your file is located at : ".__DIR__.'\\'.$output_file_name;
+echo "Your file is located at : " . __DIR__ . '\\' . $output_file_name;
 echo "\n\n";
 
 function row_is_valid($row, $expected_columns)
@@ -125,7 +135,7 @@ function row_is_valid($row, $expected_columns)
     }
 
     // check if the first column is a number (i.e series number)
-    if (!is_numeric($row[0])) {
+    if (!is_numeric($row[1])) {
         return false;
     }
 
@@ -232,10 +242,10 @@ function get_row_attributes(string $attribute)
 {
     $array = [];
 
+    $attribute = str_replace(';', '";"', $attribute);
+    $attribute = str_replace([',', '.'], '";"', $attribute);
     $attribute = str_replace(' ', '', $attribute);
-    $attribute = str_replace(':', '":"', $attribute);
-    $attribute = str_replace([',', '.'], '","', $attribute);
-    $attribute_array = explode(',', $attribute);
+    $attribute_array = explode(';', $attribute);
     foreach ($attribute_array as $single_attribute) {
         $single_attribute = str_replace('"', '', $single_attribute);
         $single_attribute_array = explode(':', $single_attribute);
