@@ -83,7 +83,7 @@ for ($i = 0; $i < count($rows); $i++) {
         foreach ($temp_attributes as $single_attribute) {
             $output_attribute[] = implode(':', $single_attribute);
         }
-        $output_attribute = implode(', ', $output_attribute);
+        $output_attribute = implode('; ', $output_attribute);
 
         $chip_json = get_chip_json([
             'series_number' => intval($row[1]),
@@ -140,11 +140,11 @@ function row_is_valid($row, $expected_columns)
     }
 
     // check if there is an empty column
-    foreach ($row as $column) {
-        if (empty(trim($column))) {
-            return false;
-        }
-    }
+    // foreach ($row as $column) {
+    //     if (empty(trim($column))) {
+    //         return false;
+    //     }
+    // }
 
     return true;
 }
