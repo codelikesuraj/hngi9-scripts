@@ -86,11 +86,12 @@ for ($i = 0; $i < count($rows); $i++) {
         $output_attribute = implode('; ', $output_attribute);
 
         $chip_json = get_chip_json([
-            'series_number' => intval($row[1]),
-            'name' => $row[3],
-            'description' => $row[4],
-            'attributes' => $attributes,
-            'uuid' => $row[7]
+            'team_name' => strval($row[0]) ?? 'n/a',
+            'series_number' => intval($row[1]) ?? 'n/a',
+            'name' => strval($row[3]) ?? 'n/a',
+            'description' => strval($row[4]) ?? 'n/a',
+            'attributes' => $attributes ?? [],
+            'uuid' => strval($row[7]) ?? 'n/a'
         ], $valid_rows);
 
         // display only one sample data in 'chip-0007 format'
@@ -180,6 +181,7 @@ function get_chip_json(array $value, int $total)
         "format" => "CHIP-0007",
         "name" => $value['name'],
         "description" => $value['description'],
+        "minting_tool" => $value['team_name'],
         "sensitive_content" => false,
         "series_number" => $value['series_number'],
         "series_total" => $total,
