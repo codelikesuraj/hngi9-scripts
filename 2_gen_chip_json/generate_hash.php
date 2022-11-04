@@ -140,13 +140,6 @@ function row_is_valid($row, $expected_columns)
         return false;
     }
 
-    // check if there is an empty column
-    // foreach ($row as $column) {
-    //     if (empty(trim($column))) {
-    //         return false;
-    //     }
-    // }
-
     return true;
 }
 
@@ -187,12 +180,12 @@ function get_chip_json(array $value, int $total)
         "series_total" => $total,
         "attributes" => $value['attributes'],
         "collection" => [
-            "name" => "HNGi9 Collection",
+            "name" => "Zuri NFT Tickets for Free Lunch",
             "id" => $value['uuid'],
             "attributes" => [
                 [
                     "type" => "description",
-                    "value" => "NFTs for free lunch on HNGi9"
+                    "value" => "Rewards for accomplishments during HNGi9"
                 ]
             ]
         ]
